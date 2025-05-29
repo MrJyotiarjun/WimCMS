@@ -25,5 +25,23 @@ router.post("/register", async (req, res) => {
 });
 
 
+router.post("/login", async (req, res) => {
+    try {
+        const { WorkEmail, Password } = req.body;
+        const result = await controller.SP("cms", {
+            Action: "LOGIN",
+            WorkEmail,
+            Password
+        })
+        if (result.recordset.length === 0) {
+            return res.status(401).json({ error: "Invalid Email or Password" });
+        }
+        res.json({ message: "Login successful", data: result.recordset[0] });
+    } catch (error) {
+        console.error("Login failed:", error.message);
+        res.status(500).json({ error: error.message });
+    }
+})
+
 
 module.exports = router;
